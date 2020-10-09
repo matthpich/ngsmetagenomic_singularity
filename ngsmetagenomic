@@ -1,0 +1,24 @@
+BootStrap: docker
+From: continuumio/miniconda3
+
+%post
+apt-get update && apt-get install -y procps
+apt-get install -y wget build-essential zlib1g-dev \
+&&      cd /tmp \
+&&      wget https://github.com/OpenGene/fastp/archive/v0.20.0.tar.gz\
+&&      tar xf v0.20.0.tar.gz \
+&&      cd fastp-0.20.0 \
+&&      make \
+&&      make install \
+&&      cd / \
+&&      rm -rf /tmp/* \
+&&      apt-get autoremove -y wget build-essential zlib1g-dev \
+&&      rm -rf /var/lib/apt/lists/*
+conda install -c bioconda -c hcc -c conda-forge python=3.6 docopt pandas bwa trim-galore kneaddata trimmomatic pysam pysamstats samtools openssl=1.0 aspera-cli awscli \
+&& conda clean -a
+
+%environment
+    PATH=/opt/conda/bin:$PATH
+
+%runscript
+    exec "$@"
